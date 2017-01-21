@@ -1,9 +1,9 @@
 
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
 
 function preload() {
-    game.load.image('star', 'assets/star.png');
+    game.load.image('whaleGreen', 'assets/whale_gr.png');
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
 }
@@ -12,7 +12,7 @@ var ggj = {};
 
 function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
-    ggj.player = game.add.sprite(32, game.world.height - 150, 'star');
+    ggj.player = game.add.sprite(32, game.world.height - 150, 'whaleGreen');
     game.physics.p2.enable(ggj.player, true);
     ggj.player.body.collideWorldBounds = true;
     ggj.player.body.mass = .1;

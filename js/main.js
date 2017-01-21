@@ -6,6 +6,8 @@ function preload() {
     game.load.image('star', 'assets/star.png');
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
+    game.load.image('backgroundWaves', 'assets/tempBackground.png');
+    game.load.physics('waveCollider', 'assets/tempBackgroundCollider.json');
 }
 
 var ggj = {};
@@ -23,6 +25,5 @@ function create() {
 }
 
 function update() {
-
     moveThing(ggj.player, ggj.keyboard, ggj.horizon);
 }

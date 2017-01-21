@@ -1,6 +1,6 @@
-ggj.drag = 10;
-ggj.speed = 20;
-ggj.gravity = 10;
+ggj.drag = 40;
+ggj.speed = 50;
+ggj.gravity = 30;
 
 function moveThing(player, input, horizon) {
     if (inSky(player, horizon)) {
@@ -17,42 +17,43 @@ function inSky(player, bound) {
 }
 
 function airMovement(player, input) {
-    player.body.velocity.y += ggj.gravity;
+    player.body.force.y += ggj.gravity;
 }
 
 function seaMovement(player, input) {
 
     // Drag
     if (player.body.velocity.x > 0)
-        player.body.velocity.x = Math.max(player.body.velocity.x - ggj.drag, 0);
+        player.body.force.x = Math.max(player.body.force.x - ggj.drag, 0);
 
     if (player.body.velocity.x < 0)
-         player.body.velocity.x = Math.min(player.body.velocity.x  + ggj.drag, 0);
+         player.body.force.x = Math.min(player.body.force.x  + ggj.drag, 0);
 
     if (player.body.velocity.y > 0)
-        player.body.velocity.y = Math.max(player.body.velocity.y - ggj.drag, 0);
+        player.body.force.y = Math.max(player.body.force.y - ggj.drag, 0);
 
     if (player.body.velocity.y < 0)
-        player.body.velocity.x = Math.max(player.body.velocity.y + ggj.drag, 0);
-    
+        player.body.force.x = Math.max(player.body.force.y + ggj.drag, 0);
+
     //Swim
     if (input.left.isDown)
     {
         //  Move to the left
-        player.body.velocity.x += -ggj.speed;
+        player.body.force.x += -ggj.speed;
     }
     if (input.right.isDown)
     {
         //  Move to the right
-        player.body.velocity.x += ggj.speed;
+        player.body.force.x += ggj.speed;
     }
     if (input.up.isDown)
     {
-        player.body.velocity.y += -ggj.speed;
+        player.body.force.y += -ggj.speed;
     }
     if (input.down.isDown)
     {
-        player.body.velocity.y += ggj.speed;
+        player.body.force.y += ggj.speed;
     }
 
 }
+

@@ -1,4 +1,4 @@
-ggj.drag = 40;
+ggj.drag = 35;
 ggj.speed = 50;
 ggj.gravity = 30;
 
@@ -24,16 +24,20 @@ function seaMovement(player, input) {
 
     // Drag
     if (player.body.velocity.x > 0)
-        player.body.force.x = Math.max(player.body.force.x - ggj.drag, 0);
+        player.body.force.x += ggj.drag;
 
     if (player.body.velocity.x < 0)
-         player.body.force.x = Math.min(player.body.force.x  + ggj.drag, 0);
+         player.body.force.x += -ggj.drag;
 
-    if (player.body.velocity.y > 0)
-        player.body.force.y = Math.max(player.body.force.y - ggj.drag, 0);
+    if (player.body.velocity.y <= 1 && player.body.velocity.y >= -1) {
+        player.body.force.y += (ggj.drag/10);
+    } else if (player.body.velocity.y > 0) {
+        player.body.force.y += ggj.drag;
+    } else if(player.body.velocity.y < 0) {
+        player.body.force.y += -ggj.drag;
+    }
 
-    if (player.body.velocity.y < 0)
-        player.body.force.x = Math.max(player.body.force.y + ggj.drag, 0);
+
 
     //Swim
     if (input.left.isDown)

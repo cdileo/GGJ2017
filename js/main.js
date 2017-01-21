@@ -3,7 +3,8 @@
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
 
 function preload() {
-    game.load.image('star', 'assets/star.png');
+    game.load.image('whaleGreen', 'assets/whale_gr.png');
+    game.load.image('bird', 'assets/bird.png');
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
     game.load.image('waves', 'assets/tempBackground.png');
@@ -13,7 +14,9 @@ function preload() {
 var ggj = {};
 
 function create() {
+    game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.startSystem(Phaser.Physics.P2JS);
+
 
     // Waves
     ggj.horizon = game.add.sprite(game.world.width + 50, game.world.height + 50, 'waves');
@@ -31,9 +34,19 @@ function create() {
 
     // Player
     ggj.player = game.add.sprite(50, 50, 'star');
+
     game.physics.p2.enable(ggj.player, true);
     ggj.player.body.collideWorldBounds = true;
     ggj.player.body.mass = .1;
+    ggj.player.body.fixedRotation = true;
+
+    ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
+    ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
+
+    ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
+    game.physics.p2.enable(ggj.bird, true);
+    ggj.bird.body.data.shapes[0].sensor = true;
+    ggj.bird.body.onBeginContact.add(hitBird);
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
@@ -55,6 +68,10 @@ function displayOverlapState(e) {
 
 function handleOverlapListener() {
     console.log('Overlap!');
+}
+
+function hitBird(bird, player) {
+    console.log("Hit bird");
 }
 
 function displaySpeeds(player) {

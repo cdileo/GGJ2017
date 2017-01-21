@@ -24,17 +24,17 @@ function seaMovement(player, input) {
 
     // Drag
     if (player.body.velocity.x > 0)
-        player.body.force.x += ggj.drag;
+        player.body.force.x -= ggj.drag;
 
     if (player.body.velocity.x < 0)
-         player.body.force.x += -ggj.drag;
+         player.body.force.x += ggj.drag;
 
     if (player.body.velocity.y <= 1 && player.body.velocity.y >= -1) {
-        player.body.force.y += (ggj.drag/10);
+        player.body.force.y -= (ggj.drag/10);
     } else if (player.body.velocity.y > 0) {
-        player.body.force.y += ggj.drag;
+        player.body.force.y -= ggj.drag;
     } else if(player.body.velocity.y < 0) {
-        player.body.force.y += -ggj.drag;
+        player.body.force.y += ggj.drag;
     }
 
 

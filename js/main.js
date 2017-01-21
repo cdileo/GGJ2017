@@ -25,15 +25,15 @@ function create() {
     hor.body.clearShapes();
     if (hor.body.loadPolygon('waveCollider')) console.log('Succeded in loading new wave poly');
     // Change our polygon to be only a sensor, not a physics collider.
-    // for (let i in hor.body.data.shapes) {
-    //     hor.body.data.shapes[i].sensor = true;
-    // }
+    for (let i in hor.body.data.shapes) {
+        hor.body.data.shapes[i].sensor = true;
+    }
     hor.anchor.x = 1;
     hor.anchor.y = 1;
     hor.body.onBeginContact.add(displayOverlapState, this);
 
     // Player
-    ggj.player = game.add.sprite(50, 50, 'star');
+    ggj.player = game.add.sprite(50, 50, 'whaleGreen');
 
     game.physics.p2.enable(ggj.player, true);
     ggj.player.body.collideWorldBounds = true;

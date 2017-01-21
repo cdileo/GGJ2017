@@ -15,7 +15,7 @@ function create() {
     game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.startSystem(Phaser.Physics.P2JS);
     ggj.player = game.add.sprite(32, game.world.height - 150, 'whaleGreen');
-    game.physics.p2.enable(ggj.player);
+    game.physics.p2.enable(ggj.player, true);
     ggj.player.body.collideWorldBounds = true;
     ggj.player.body.mass = .1;
     ggj.player.body.fixedRotation = true;
@@ -24,9 +24,9 @@ function create() {
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
 
     ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
-    game.physics.p2.enable(ggj.bird);
+    game.physics.p2.enable(ggj.bird, true);
     ggj.bird.body.data.shapes[0].sensor = true;
-    ggj.bird.body.collides(ggj.player, hitBird, this);
+    ggj.bird.body.onBeginContact.add(hitBird);
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();

@@ -7,15 +7,17 @@ function preload() {
     game.load.script('input', 'js/input.js');
 }
 
+var ggj = {};
+
 function create() {
-    player = game.add.sprite(32, game.world.height - 150, 'star');
-    game.physics.arcade.enable(player);
+    ggj.player = game.add.sprite(32, game.world.height - 150, 'star');
+    game.physics.arcade.enable(ggj.player);
 
     //  Our controls.
-    keyboard = game.input.keyboard.createCursorKeys();
+    ggj.keyboard = game.input.keyboard.createCursorKeys();
 }
 
 function update() {
 
-    moveThing(player, keyboard);
+    moveThing(ggj.player, ggj.keyboard);
 }

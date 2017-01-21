@@ -29,11 +29,15 @@ function seaMovement(player, input) {
     if (player.body.velocity.x < 0)
          player.body.force.x += -ggj.drag;
 
-    if (player.body.velocity.y > 0)
+    if (player.body.velocity.y <= 1 && player.body.velocity.y >= -1) {
+        player.body.force.y += (ggj.drag/10);
+    } else if (player.body.velocity.y > 0) {
         player.body.force.y += ggj.drag;
-
-    if (player.body.velocity.y < 0)
+    } else if(player.body.velocity.y < 0) {
         player.body.force.y += -ggj.drag;
+    }
+
+
 
     //Swim
     if (input.left.isDown)

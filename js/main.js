@@ -19,7 +19,12 @@ function create() {
     // ggj.gamepads[1] = game.input.gamepad.pad2;
     // ggj.gamepads[2] = game.input.gamepad.pad3;
     // ggj.gamepads[3] = game.input.gamepad.pad4;
-
+    ggj.scoreText = game.add.text(16, 16, 'Not connected', { fontSize: '32px', fill: '#fff' });
+    window.addEventListener("gamepadconnected", function(e) {
+            console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
+        });
     //  Our controls (keyboard).
     ggj.keyboard = game.input.keyboard.createCursorKeys();
 }
@@ -35,36 +40,57 @@ function update() {
 }
 
 function checkGamepad (pad) {
+    var gamepad0 = navigator.getGamepads()[0];
+    var speed = 30;
     // Pad "connected or not" indicator
     var isConnected = [];
-    if(game.input.gamepad.pad1.connected) {
+    if(gamepad0.connected) {
         isConnected[0] = 0;
-        console.log('pad1 connected');
+        ggj.scoreText.text = "Gamepad 0 connected" +
+            "\nA0: " + gamepad0.axes[0] +
+            "\nA1: " + gamepad0.axes[1] +
+            "\nA2: " + gamepad0.axes[2] +
+            "\nA3: " + gamepad0.axes[3];
+
     } else {
         isConnected[0] = 1;
+        ggj.scoreText.text = "Gamepad 0 NOT connected";
     }
     if(game.input.gamepad.pad2.connected) {
         isConnected[1] = 0;
+         ggj.scoreText.text +=  "\nP2 Connected";
     } else {
         isConnected[1] = 1;
     }
 
-    if (pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1)
+    for (var i = 0; i < gamepad0.buttons.length; i++) {
+        if (gamepad0.buttons[i].pressed) {
+            console.log("button " + i + " pressed");
+            console.log(gamepad0.buttons[i]);
+        }
+    }
+
+    ggj.player.body.force.x += speed*gamepad0.axes[0];
+    ggj.player.body.force.y += speed*gamepad0.axes[1];
+
+
+
+    if (pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT || pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1))
     {
-        ggj.player.x--;
+        ggj.player.body.force.x = -200;
         console.log('left');
     }
     if (pad.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1)
     {
-        ggj.player.x++;
+        ggj.player.body.force.x = 200;
         console.log('right');
     }
     if (pad.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1)
     {
-        ggj.player.y--;
+        ggj.player.body.force.y = -200;
     }
     if (pad.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1)
     {
-        ggj.player.y++;
+        ggj.player.body.force.y = 200;
     }
 }

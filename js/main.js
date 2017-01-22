@@ -287,6 +287,7 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
                                             'splashEffect');
         splashSprite.rotation = angleRads;
         let anim = splashSprite.animations.add('splash');
+        game.world.swapChildren(splashSprite, thisWhale);
         splashSprite.animations.play('splash', 30, false);
         anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);
     }

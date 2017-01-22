@@ -184,6 +184,7 @@ function createPlayer(sprite, player) {
     newSprite.body.fixedRotation = true;
     newSprite.isUnderWater = true;
     newSprite.name = `whale ${player}`;
+    newSprite.isUnderWaterMask = 0;
     newSprite.body.onBeginContact.add(setIsUnderwater);
     newSprite.body.onEndContact.add(setIsNotUnderwater);
     return newSprite;
@@ -244,12 +245,14 @@ function displayKeys(){
 function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
+    thisWhale.isUnderWaterMask |= otherBody.sprite.bitMask;
     thisWhale.isUnderWater = true;
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
+    thisWhale.isUnderWaterMask &= ~otherBody.sprite.bitMask;
     thisWhale.isUnderWater = false;
 }
 
@@ -278,6 +281,7 @@ function createWaveColliders() {
         rect.body.data.shapes[0].sensor = true;
         rect.visible = false;
         rect.name = `waveCollider ${i}`;
+        rect.bitMask = 1 << i;
         curX += widths[i];
     }
 }

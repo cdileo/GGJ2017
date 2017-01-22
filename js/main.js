@@ -384,6 +384,7 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
         let anim = splashSprite.animations.add('splash');
         splashSprite.animations.play('splash', 30, false);
         anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);
+        ggj.soundEffects['whaleLand'].play();
     }
 }
 

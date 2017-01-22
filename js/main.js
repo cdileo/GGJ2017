@@ -24,6 +24,7 @@ var birds = [];
 var birdsAdded = 0;
 ggj.roundMS = 10000;
 ggj.roundOver = false;
+ggj.WAVE_COLLIDER_COUNT = 9;
 
 
 function create() {
@@ -184,7 +185,7 @@ function createPlayer(sprite, player) {
     newSprite.body.fixedRotation = true;
     newSprite.isUnderWater = true;
     newSprite.name = `whale ${player}`;
-    newSprite.isUnderWaterMask = 0;
+    newSprite.isUnderWaterCount = 0;
     newSprite.body.onBeginContact.add(setIsUnderwater);
     newSprite.body.onEndContact.add(setIsNotUnderwater);
     return newSprite;
@@ -245,15 +246,17 @@ function displayKeys(){
 function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
-    thisWhale.isUnderWaterMask |= otherBody.sprite.bitMask;
-    thisWhale.isUnderWater = true;
+    thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
+    console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
+    Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
-    thisWhale.isUnderWaterMask &= ~otherBody.sprite.bitMask;
-    thisWhale.isUnderWater = false;
+    thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
+    console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
+    Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function createWaveColliders() {

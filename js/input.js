@@ -12,7 +12,7 @@ function moveThing(player, input) {
 }
 
 function inSky(player, bound) {
-    return !player.isUnderWater;
+    return player.isUnderWaterCount <= 0;
 }
 
 function airMovement(player, input) {

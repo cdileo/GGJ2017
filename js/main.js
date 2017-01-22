@@ -11,7 +11,7 @@ WebFontConfig = {
     //  'active' means all requested fonts have finished loading
     //  We set a 1 second delay before calling 'createText'.
     //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+    //active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
@@ -60,9 +60,10 @@ var birdsAdded = 0;
 ggj.roundMS = 20000;
 ggj.roundOver = false;
 ggj.title = true;
+ggj.pregame = false;
 ggj.WAVE_COLLIDER_COUNT = 9;
-ggj.WELCOME_STRING = "Use the left joystick to swim in the \nocean (one person can use the arrow \nkeys on the keyboard).\n" +
-    "The faster you are swimming \nwhen you leave the water, the \nhigher you will jump!\n\n" +
+ggj.WELCOME_STRING = "Use the left joystick to swim in the ocean (one person can \nuse the arrow keys on the keyboard).\n" +
+    "The faster you are swimming when you leave the water, the \nhigher you will jump!\n\n" +
     "To win the game, EAT THE MOST BIRDS.\n" +
     "PRESS THE SPACEBAR TO START"; 
 ggj.CREDITS = "Angela Chen - Programmer\n" +
@@ -112,6 +113,7 @@ function create() {
 
     ggj.titleSprite = game.add.sprite(560, 5, 'gameTitle');
     ggj.titleSprite.scale.setTo(.5, .5);
+    ggj.scoreText = game.add.text(16, 16, 'PRESS SPACEBAR TO CONTINUE', ggj.scoreStyle);
 }
 
 function render() {
@@ -142,12 +144,6 @@ function update() {
     showTimer();
 }
 
-function createText() {
-    ggj.scoreText = game.add.text(16, 16, 'WHALES HATE BIRDS', ggj.scoreStyle);
-    ggj.timerText = game.add.text(16, 64, ggj.WELCOME_STRING, ggj.timerStyle);
-
-}
-
 function startRound() {
 
     // Game is done, restart
@@ -156,12 +152,19 @@ function startRound() {
     }
 
     // Game in progress, do nothing
-    if (!ggj.title) return;
+    if (!ggj.title && !ggj.pregame) return;
+
+    if (ggj.title) {
+        ggj.titleSprite.destroy();
+        ggj.title = false;
+        ggj.pregame = true;
+        ggj.scoreText.text = 'WHALES HATE BIRDS';
+        ggj.timerText = game.add.text(16, 64, ggj.WELCOME_STRING, ggj.timerStyle);
+        return;
+    }
 
     // Game read to start
-    ggj.title = false;
-
-    ggj.titleSprite.destroy();
+    ggj.pregame = false;
 
     ggj.startTime = Date.now();
     ggj.timerText.fill = '#000';
@@ -173,7 +176,7 @@ function startRound() {
 }
 
 function showTimer() {
-    if (!ggj.roundOver && !ggj.title) {
+    if (!ggj.roundOver && !ggj.title && !ggj.pregame) {
         showScore();
         var timeLeft = (ggj.roundMS - (Date.now() - ggj.startTime)) /1000
         if (timeLeft <= 10) {

@@ -41,7 +41,7 @@ function seaMovement(player, input) {
     }
 
     // Swim
-    
+    if (ggj.roundOver) return;   
     var x = 0, y = 0;
     // debugger;
     if (input.id && input.id.includes("360 Controller")) {

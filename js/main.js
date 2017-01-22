@@ -22,8 +22,13 @@ function preload() {
 var ggj = {};
 var birds = [];
 var birdsAdded = 0;
+ggj.roundMS = 10000;
+ggj.roundOver = false;
+
 
 function create() {
+    ggj.startTime = Date.now();
+
     //game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.setBoundsToWorld();
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -47,6 +52,8 @@ function create() {
     ggj.players[2] = createPlayer("whaleBlue", 2);
     ggj.players[3] = createPlayer("whaleBlack", 3);
 
+    ggj.score = {Red: 0, Green: 0, Blue: 0, Black: 0};
+
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
     
@@ -57,13 +64,16 @@ function create() {
         });
 
     //spawn a bird every 3 seconds
-    setInterval(createBird, 1000);
+    ggj.birdInterval = setInterval(createBird, 1000);
+
+    ggj.roundInterval = setInterval(endRound, ggj.roundMS);
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
     ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
+    ggj.timerText = game.add.text(16, 64, 'Hey timer', { fontSize: '32px', fill: '#fff' });
 
-    ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
+    // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
 
 }
 
@@ -75,7 +85,9 @@ function render() {
     // }
 }
 
+
 function update() {
+
     moveThing(ggj.players[3], ggj.keyboard);    
     // moveThing(ggj.players[3], navigator.getGamepads()[3]);    
     for (var i = 0; i < 3; i++) {
@@ -86,7 +98,43 @@ function update() {
             birds[i].destroy();
         }
     }
-    ggj.scoreText.text = birds.length; 
+    if (!ggj.roundOver) {
+        showScore();
+        ggj.timerText.text = ggj.roundMS - (Date.now() - ggj.startTime);
+    }
+    
+}
+
+function endRound() {
+    ggj.roundOver = true;
+    clearInterval(ggj.birdInterval);
+    ggj.timerText.text = "ROUND OVER, ";
+
+    var max = 0;
+    var winners = 0;
+    // Get Highest score
+    for (whale in ggj.score) {
+        max = Math.max(max, ggj.score[whale]);
+    }
+    // Determine winners
+    for (whale in ggj.score) {
+        if (ggj.score[whale] == max) {
+            winners++;
+            ggj.timerText.text += whale + " ";
+        }
+    }
+
+    ggj.timerText.text += winners > 1? "WIN!!!!" : "WINS!!!!!";
+}
+
+function showScore() {
+
+    var str = "";
+    for (whale in ggj.score) {
+        str += whale + ": " + ggj.score[whale] + "  ";
+    }
+
+    ggj.scoreText.text = str;
 }
 
 function render() {
@@ -117,8 +165,9 @@ function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
     var bird = birdShape.body.parent.sprite;
     bird.destroy();
 
-    var player = playerBody.sprite;
-    ggj.scoreText.text = player.key + " Won!";
+    var whaleColor = playerBody.sprite.key.slice(5);
+    console.log(whaleColor);
+    ggj.score[whaleColor]++;
 
 }
 

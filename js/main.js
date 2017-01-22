@@ -210,8 +210,8 @@ function createPlayer(sprite, player) {
     newSprite.body.onBeginContact.add(setIsUnderwater);
     newSprite.body.onEndContact.add(setIsNotUnderwater);
 
-    newSprite.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
-    newSprite.animations.add('left', [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
+    newSprite.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8], 10, true);
+    newSprite.animations.add('left', [11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
 
     return newSprite;
 }

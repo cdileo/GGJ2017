@@ -2,6 +2,7 @@ ggj.drag = 55;
 ggj.speed = 160;
 ggj.gravity = 50;
 
+
 function moveThing(player, input) {
 
     var sky = inSky(player);

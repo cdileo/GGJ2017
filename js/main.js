@@ -24,6 +24,15 @@ function preload() {
     game.load.audio('backing', 'assets/audio/Backing.ogg');
     game.load.audio('melody1', 'assets/audio/Melody1.ogg');
     game.load.audio('melody2', 'assets/audio/Melody2.ogg');
+
+    // Sound Effects
+    game.load.audio('birdExplode', 'assets/audio/birdExplode.ogg');
+    game.load.audio('whaleJump', 'assets/audio/whaleJump.ogg');
+    game.load.audio('whaleLand', 'assets/audio/whaleLand.ogg');
+    game.load.audio('whaleBump', 'assets/audio/whaleBump.ogg');
+    game.load.audio('whaleSounds2', 'assets/audio/whaleSounds2.ogg');
+    game.load.audio('whaleSounds3', 'assets/audio/whaleSounds3.ogg');
+    game.load.audio('bubbles', 'assets/audio/bubbles.ogg');
 }
 
 var ggj = {};
@@ -75,6 +84,7 @@ function create() {
 
     // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
     ggj.music = createMusic();
+    ggj.soundEffects = createSoundEffects();
     ggj.music.tracks[0].play();
 }
 
@@ -176,7 +186,9 @@ function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
     var deadBird = game.add.sprite(x, y, 'eatBirdEffect');
     deadBird.animations.add('explode', [0, 1, 2, 3, 4, 5]);
     deadBird.animations.play('explode', 10, false, true);
-   
+
+    
+
     bird.destroy();
 
     var whaleColor = playerBody.sprite.key.slice(5);
@@ -329,4 +341,17 @@ function createMusic () {
 
 function nextMusic (context, pri, nextTrackNo) {
     ggj.music.tracks[nextTrackNo].play();
+}
+
+function createSoundEffects () {
+    let effects = {};
+    effects['birdExplode'] = game.add.audio('birdExplode');
+    effects['whaleJump'] = game.add.audio('whaleJump');
+    effects['whaleLand'] = game.add.audio('whaleLand');
+    effects['whaleBump'] = game.add.audio('whaleBump');
+    effects['whaleSounds2'] = game.add.audio('whaleSounds2');
+    effects['whaleSounds3'] = game.add.audio('whaleSounds3');
+    effects['bubbles'] = game.add.audio('bubbles');
+
+    return effects;
 }

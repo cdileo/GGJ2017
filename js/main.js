@@ -39,13 +39,6 @@ function create() {
     ggj.waveColliders = createWaveColliders();
 
     // Player
-    ggj.player = game.add.sprite(50, 50, 'whaleGreen');
-
-    game.physics.p2.enable(ggj.player, true);
-    ggj.player.body.collideWorldBounds = true;
-    ggj.player.body.mass = .1;
-    ggj.player.body.fixedRotation = true;
-
     ggj.players = [];
     ggj.players[0] = createPlayer("whaleRed", 0);
     ggj.players[1] = createPlayer("whaleGreen", 1);
@@ -182,13 +175,17 @@ function createPlayer(sprite, player) {
 
     var newSprite = game.add.sprite(
         (player*150)+50, 
-        game.world.height/3, 
+        2 * game.world.height/3, 
         sprite);
 
     game.physics.p2.enable(newSprite);
     newSprite.body.collideWorldBounds = true;
     newSprite.body.mass = .1;
     newSprite.body.fixedRotation = true;
+    newSprite.isUnderWater = true;
+    newSprite.name = `whale ${player}`;
+    newSprite.body.onBeginContact.add(setIsUnderwater);
+    newSprite.body.onEndContact.add(setIsNotUnderwater);
     return newSprite;
 }
 
@@ -244,6 +241,18 @@ function displayKeys(){
         ggj.scoreText.text += "up. ";
 }
 
+function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
+    if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
+    let thisWhale = thisShape.body.parent.sprite;
+    thisWhale.isUnderWater = true;
+}
+
+function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
+    if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
+    let thisWhale = thisShape.body.parent.sprite;
+    thisWhale.isUnderWater = false;
+}
+
 function createWaveColliders() {
     let xMin = 0;
     let xMax = game.world.width;
@@ -268,6 +277,7 @@ function createWaveColliders() {
         rect.body.setRectangleFromSprite();
         rect.body.data.shapes[0].sensor = true;
         rect.visible = false;
+        rect.name = `waveCollider ${i}`;
         curX += widths[i];
     }
 }

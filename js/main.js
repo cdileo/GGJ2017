@@ -144,6 +144,7 @@ function showScore() {
 
 function render() {
     //game.debug.inputInfo(32, 32);
+    // game.debug.spriteInfo(ggj.players[3], 32, 32);
 }
 
 function createBird() {
@@ -280,9 +281,9 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
         let yVec = thisWhale.body.velocity.y;
         let angleRads = Math.atan2(yVec, xVec) - Math.PI / 2;
         let angleDeg = (angleRads * 180 / Math.PI);
-        console.debug(`Splashing at ${angleDeg}`);
+        let dirMod = xVec > 0 ? 1 : -1;
         let splashSprite = game.add.sprite( thisWhale.x - thisWhale.width / 2,
-                                            thisWhale.y - thisWhale.height / 2, 
+                                            thisWhale.y - thisWhale.height, 
                                             'splashEffect');
         splashSprite.rotation = angleRads;
         let anim = splashSprite.animations.add('splash');

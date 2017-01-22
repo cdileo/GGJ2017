@@ -41,6 +41,15 @@ function preload() {
 
     //  Load the Google WebFont Loader script
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
+    // Sound Effects
+    game.load.audio('birdExplode', 'assets/audio/effects/birdExplode.ogg');
+    game.load.audio('whaleJump', 'assets/audio/effects/whaleJump.ogg');
+    game.load.audio('whaleLand', 'assets/audio/effects/whaleLand.ogg');
+    game.load.audio('whaleBump', 'assets/audio/effects/whaleBump.ogg');
+    game.load.audio('whaleSounds2', 'assets/audio/effects/whaleSounds2.ogg');
+    game.load.audio('whaleSounds3', 'assets/audio/effects/whaleSounds3.ogg');
+    game.load.audio('bubbles', 'assets/audio/effects/bubbles.ogg');
 }
 
 var ggj = {};
@@ -92,6 +101,7 @@ function create() {
     ggj.keyboard = game.input.keyboard.createCursorKeys();
 
     ggj.music = createMusic();
+    ggj.soundEffects = createSoundEffects();
     ggj.music.tracks[0].play();
 }
 
@@ -232,8 +242,9 @@ function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
     var deadBird = game.add.sprite(x, y, 'eatBirdEffect');
     deadBird.animations.add('explode', [0, 1, 2, 3, 4, 5]);
     deadBird.animations.play('explode', 10, false, true);
-   
+
     bird.destroy();
+    ggj.soundEffects['birdExplode'].play();
 
     var whaleColor = playerBody.sprite.key.slice(5);
     console.log(whaleColor);
@@ -325,19 +336,28 @@ function displayKeys(){
 }
 
 function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
-    if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
+    if (otherBody != null && otherBody.sprite != null) {        
+        //This should probably be separated, but works here for now.
+        if (otherBody.sprite.name.includes('whale')) {
+            ggj.soundEffects['whaleBump'].play();
+            return;
+        }
+        if (!otherBody.sprite.name.includes('wave')) {
+            return;
+        }
+    } else { return; }
     let thisWhale = thisShape.body.parent.sprite;
+    if (thisWhale.isUnderWaterCount == 0)
+        ggj.soundEffects['whaleLand'].play(); 
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
-    // console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
-    // console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
+    if (thisWhale.isUnderWaterCount == 0)
+        ggj.soundEffects['whaleJump'].play(); 
 }
 
 function createWaveColliders() {
@@ -385,4 +405,23 @@ function createMusic () {
 
 function nextMusic (context, pri, nextTrackNo) {
     ggj.music.tracks[nextTrackNo].play();
+}
+
+function createSoundEffects () {
+    let effects = {};
+    effects['birdExplode'] = game.add.audio('birdExplode');
+    effects['whaleJump'] = game.add.audio('whaleJump');
+    effects['whaleLand'] = game.add.audio('whaleLand');
+    effects['whaleBump'] = game.add.audio('whaleBump');
+    effects['whaleSounds'] = [];
+    effects['bubbles'] = game.add.audio('bubbles');
+    for (let i in effects) {
+        effects[i].allowMultiple = true;
+    }
+
+    effects['whaleSounds'][0] = game.add.audio('whaleSounds2');
+    effects['whaleSounds'][1] = game.add.audio('whaleSounds3');
+    // Point at which movement audio will be triggered
+    effects['audioThreshold'] = 60;
+    return effects;
 }

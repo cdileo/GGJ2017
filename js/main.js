@@ -277,7 +277,9 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     // If we're leaving the water, play the splash animation
     if (thisWhale.isUnderWaterCount >= 0 && oldCount == 0) {
         console.debug('splash!');
-        let splashSprite = game.add.sprite(thisWhale.x, thisWhale.y, 'splashEffect');
+        let splashSprite = game.add.sprite( thisWhale.x - thisWhale.width / 2,
+                                            thisWhale.y - thisWhale.height / 2, 
+                                            'splashEffect');
         let anim = splashSprite.animations.add('splash');
         splashSprite.animations.play('splash', 30, false);
         anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);

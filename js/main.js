@@ -84,8 +84,6 @@ function update() {
     for (var i = 0; i < 4; i++) {
         moveThing(ggj.players[i], navigator.getGamepads()[i]);    
     }
-
-
     for (var i = 0; i < birds.length; i++) {
         if (birds[i].body && birds[i].body.x > game.world.width) {
             birds[i].destroy();
@@ -185,7 +183,6 @@ function checkGamepad (gamepad) {
             console.log(gamepad.buttons[i]);
         }
     }
->>>>>>> input
 }
 
 function displaySpeeds(player) {

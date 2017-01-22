@@ -12,9 +12,7 @@ function moveThing(player, input) {
 }
 
 function inSky(player, bound) {
-
     return player.body.y <= bound.y;
-
 }
 
 function airMovement(player, input) {

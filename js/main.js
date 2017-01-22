@@ -120,7 +120,7 @@ function update() {
     if (ggj.title) return;
 
     // optional keyboard control
-    if (navigator.getGamepads()[i] == null)
+    if (navigator.getGamepads()[3] == null)
         moveThing(ggj.players[3], ggj.keyboard);    
     else 
         moveThing(ggj.players[3], navigator.getGamepads()[3]);

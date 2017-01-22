@@ -80,7 +80,9 @@ function render() {
 }
 
 function update() {
-    for (var i = 0; i < 4; i++) {
+    moveThing(ggj.players[3], ggj.keyboard);    
+    // moveThing(ggj.players[3], navigator.getGamepads()[3]);    
+    for (var i = 0; i < 3; i++) {
         moveThing(ggj.players[i], navigator.getGamepads()[i]);    
     }
     for (var i = 0; i < birds.length; i++) {

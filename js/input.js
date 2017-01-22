@@ -41,8 +41,10 @@ function seaMovement(player, input) {
     }
 
     // Swim
+    
     var x = 0, y = 0;
-    if (input.id && input.id.includes("Xbox 360 Controller")) {
+    // debugger;
+    if (input.id && input.id.includes("360 Controller")) {
         x = parseFloat(input.axes[0].toFixed(1));
         y = parseFloat(input.axes[1].toFixed(1));
     } else {

@@ -34,7 +34,8 @@ function create() {
     }
     hor.anchor.x = 1;
     hor.anchor.y = 1;
-    hor.body.onBeginContact.add(displayOverlapState, this);
+    hor.body.onBeginContact.add(displayOverlapState, this, hor);
+
     let horDebugGraphic = new Phaser.Graphics(game, 0, game.world.height);
     for (let i in hor.body.data.shapes) {
         horDebugGraphic.beginFill(0xff0000);
@@ -75,9 +76,9 @@ function render() {
 }
 
 // Simple test for overlap state
-function displayOverlapState(e) {
+function displayOverlapState(hor) {
     // obj1.body.onBeginContact.add(handleOverlapListener, this);
-    console.log(e);
+    console.log(hor);
 }
 
 function handleOverlapListener() {

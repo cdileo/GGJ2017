@@ -4,6 +4,7 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload
 
 function preload() {
     game.load.image('whaleGreen', 'assets/whale_gr.png');
+    game.load.image('whaleRed', 'assets/whale_re.png');
     game.load.image('bird', 'assets/bird.png');
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
@@ -14,19 +15,23 @@ var ggj = {};
 function create() {
     game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.startSystem(Phaser.Physics.P2JS);
-    ggj.player = game.add.sprite(32, game.world.height - 150, 'whaleGreen');
-    game.physics.p2.enable(ggj.player, true);
-    ggj.player.body.collideWorldBounds = true;
-    ggj.player.body.mass = .1;
-    ggj.player.body.fixedRotation = true;
+
+    ggj.player2 = createPlayer("whaleRed", 500);
+    ggj.player1 = createPlayer("whaleGreen", 200);
 
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
 
     ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
-    game.physics.p2.enable(ggj.bird, true);
+    game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.body.onBeginContact.add(hitBird);
+
+    window.addEventListener("gamepadconnected", function(e) {
+            console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
+        });
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
@@ -36,13 +41,63 @@ function create() {
 
 function update() {
 
-    moveThing(ggj.player, ggj.keyboard, ggj.horizon);
-    displaySpeeds(ggj.player);
+    moveThing(ggj.player1, ggj.keyboard);
+    moveThing(ggj.player2, navigator.getGamepads()[0]);
+    checkGamepad(navigator.getGamepads()[0]);
 }
 
-function hitBird(bird, player) {
-    console.log("Hit bird");
+function hitBird(playerBody, birdBody, shape, shape, eq) {
+    var bird = birdBody.sprite;
+    console.log(bird);
+    bird.kill();
 
+    var player = playerBody.sprite;
+    ggj.scoreText.text = player.key + " Won!";
+
+}
+
+function createPlayer(sprite, x) {
+    var newSprite = game.add.sprite(x, game.world.height/3, sprite);
+    game.physics.p2.enable(newSprite);
+    newSprite.body.collideWorldBounds = true;
+    newSprite.body.mass = .1;
+    newSprite.body.fixedRotation = true;
+    return newSprite;
+}
+
+function checkGamepad (gamepad) {
+    if (gamepad == null) {
+        ggj.scoreText = "GP not connected";
+        return;
+    }
+    var speed = 30;
+    // Pad "connected or not" indicator
+    var isConnected = [];
+    if(gamepad.connected) {
+        isConnected[0] = 0;
+        ggj.scoreText.text = "Gamepad 0 connected" +
+            "\nA0: " + gamepad.axes[0] +
+            "\nA1: " + gamepad.axes[1] +
+            "\nA2: " + gamepad.axes[2] +
+            "\nA3: " + gamepad.axes[3];
+
+    } else {
+        isConnected[0] = 1;
+        ggj.scoreText.text = "Gamepad 0 NOT connected";
+    }
+    if(game.input.gamepad.pad2.connected) {
+        isConnected[1] = 0;
+         ggj.scoreText.text +=  "\nP2 Connected";
+    } else {
+        isConnected[1] = 1;
+    }
+
+    for (var i = 0; i < gamepad.buttons.length; i++) {
+        if (gamepad.buttons[i].pressed) {
+            console.log("button " + i + " pressed");
+            console.log(gamepad.buttons[i]);
+        }
+    }
 }
 
 function displaySpeeds(player) {

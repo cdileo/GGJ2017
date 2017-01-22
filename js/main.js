@@ -67,9 +67,8 @@ function create() {
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
-
-    // ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
-    // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
+    ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
+    ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
 }
 
 function render() {

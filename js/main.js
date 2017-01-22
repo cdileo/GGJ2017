@@ -111,8 +111,8 @@ function create() {
     ggj.soundEffects = createSoundEffects();
     ggj.music.tracks[0].play();
 
-    ggj.titleSprite = game.add.sprite(560, 5, 'gameTitle');
-    ggj.titleSprite.scale.setTo(.5, .5);
+    ggj.titleSprite = game.add.sprite(0, 0, 'gameTitle');
+    // ggj.titleSprite.scale.setTo(.5, .5);
     ggj.scoreText = game.add.text(16, 16, 'PRESS SPACEBAR TO CONTINUE', ggj.scoreStyle);
 }
 

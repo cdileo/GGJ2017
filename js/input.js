@@ -1,13 +1,8 @@
-ggj.drag = 75;
+ggj.drag = 55;
 ggj.speed = 160;
 ggj.gravity = 50;
 
 function moveThing(player, input) {
-
-    if (input == null) {
-        ggj.scoreText.text = "input for " + player.key + " is null";
-        return;
-    }
 
     if (inSky(player, ggj.horizon)) {
         airMovement(player, input);
@@ -35,14 +30,17 @@ function seaMovement(player, input) {
     if (player.body.velocity.x < 0)
          player.body.force.x += ggj.drag;
 
-    if (player.body.velocity.y <= 1 && player.body.velocity.y >= -1) {
-        player.body.force.y -= (ggj.drag/10);
+    if (player.body.velocity.y <= 10 && player.body.velocity.y >= -10) {
+        player.body.force.y += (ggj.drag);
     } else if (player.body.velocity.y > 0) {
         player.body.force.y -= ggj.drag;
     } else if(player.body.velocity.y < 0) {
         player.body.force.y += ggj.drag;
     }
 
+    if (input == null) {
+        return;
+    }
 
     // Swim
     var x = 0, y = 0;

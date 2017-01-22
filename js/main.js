@@ -5,6 +5,9 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload
 function preload() {
     game.load.image('whaleGreen', 'assets/whale_gr.png');
     game.load.image('whaleRed', 'assets/whale_re.png');
+    game.load.image('whaleBlue', 'assets/whale_blu.png');
+    game.load.image('whaleBlack', 'assets/whale_bl.png');
+
     game.load.image('bird', 'assets/bird.png');
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
@@ -18,8 +21,11 @@ function create() {
     game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    ggj.player2 = createPlayer("whaleRed", 500);
-    ggj.player1 = createPlayer("whaleGreen", 200);
+    ggj.players = [];
+    ggj.players[0] = createPlayer("whaleRed", 0);
+    ggj.players[1] = createPlayer("whaleGreen", 1);
+    ggj.players[2] = createPlayer("whaleBlue", 2);
+    ggj.players[3] = createPlayer("whaleBlack", 3);
 
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
@@ -46,8 +52,10 @@ function create() {
 
 function update() {
 
-    moveThing(ggj.player1, ggj.keyboard);
-    moveThing(ggj.player2, navigator.getGamepads()[0]);
+    for (var i = 0; i < 4; i++) {
+        moveThing(ggj.players[i], navigator.getGamepads()[i]);    
+    }
+    displaySpeeds(ggj.players[2]);
     //checkGamepad(navigator.getGamepads()[0]);
     // if (ggj.bird.body.x > game.world.width - 500) {
     //     ggj.bird.destroy();
@@ -82,8 +90,12 @@ function hitBird(playerBody, birdBody, shape, shape, eq) {
 
 }
 
-function createPlayer(sprite, x) {
-    var newSprite = game.add.sprite(x, game.world.height/3, sprite);
+function createPlayer(sprite, player) {
+    var newSprite = game.add.sprite(
+        (player*150)+50, 
+        game.world.height/3, 
+        sprite);
+
     game.physics.p2.enable(newSprite);
     newSprite.body.collideWorldBounds = true;
     newSprite.body.mass = .1;
@@ -127,7 +139,7 @@ function checkGamepad (gamepad) {
 }
 
 function displaySpeeds(player) {
-    ggj.scoreText.text = player.body.velocity.x + "\n" + player.body.force.x;
+    ggj.scoreText.text = player.body.velocity.y + "\n" + player.body.force.y;
 
 }
 

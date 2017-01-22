@@ -48,9 +48,7 @@ function update() {
 
     moveThing(ggj.player1, ggj.keyboard);
     moveThing(ggj.player2, navigator.getGamepads()[0]);
-    checkGamepad(navigator.getGamepads()[0]);
-    moveThing(ggj.player, ggj.keyboard, ggj.horizon);
-    displaySpeeds(ggj.player);
+    //checkGamepad(navigator.getGamepads()[0]);
     // if (ggj.bird.body.x > game.world.width - 500) {
     //     ggj.bird.destroy();
     // } 
@@ -77,7 +75,7 @@ function removeBird() {
 function hitBird(playerBody, birdBody, shape, shape, eq) {
     var bird = birdBody.sprite;
     console.log(bird);
-    bird.kill();
+    ggj.bird.kill();
 
     var player = playerBody.sprite;
     ggj.scoreText.text = player.key + " Won!";

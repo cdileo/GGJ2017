@@ -1,9 +1,10 @@
-ggj.drag = 35;
-ggj.speed = 50;
-ggj.gravity = 30;
+ggj.drag = 55;
+ggj.speed = 160;
+ggj.gravity = 50;
 
-function moveThing(player, input, horizon) {
-    if (inSky(player, horizon)) {
+function moveThing(player, input) {
+
+    if (inSky(player, ggj.horizon)) {
         airMovement(player, input);
     } else {
         seaMovement(player, input);
@@ -29,35 +30,41 @@ function seaMovement(player, input) {
     if (player.body.velocity.x < 0)
          player.body.force.x += ggj.drag;
 
-    if (player.body.velocity.y <= 1 && player.body.velocity.y >= -1) {
-        player.body.force.y -= (ggj.drag/10);
+    if (player.body.velocity.y <= 10 && player.body.velocity.y >= -10) {
+        player.body.force.y += (ggj.drag);
     } else if (player.body.velocity.y > 0) {
         player.body.force.y -= ggj.drag;
     } else if(player.body.velocity.y < 0) {
         player.body.force.y += ggj.drag;
     }
 
+    if (input == null) {
+        return;
+    }
 
+    // Swim
+    var x = 0, y = 0;
+    if (input.id && input.id.includes("Xbox 360 Controller")) {
+        x = parseFloat(input.axes[0].toFixed(1));
+        y = parseFloat(input.axes[1].toFixed(1));
+    } else {
 
-    //Swim
-    if (input.left.isDown)
-    {
-        //  Move to the left
-        player.body.force.x += -ggj.speed;
+        // Keyboard??
+        if (input.left.isDown) {
+            x = -1;
+        } else if (input.right.isDown) {
+            x = 1;
+        }
+
+        if (input.up.isDown) {
+            y = -1;
+        } else if (input.down.isDown) {
+            y = 1;
+        }
     }
-    if (input.right.isDown)
-    {
-        //  Move to the right
-        player.body.force.x += ggj.speed;
-    }
-    if (input.up.isDown)
-    {
-        player.body.force.y += -ggj.speed;
-    }
-    if (input.down.isDown)
-    {
-        player.body.force.y += ggj.speed;
-    }
+
+    player.body.force.x += ggj.speed*x;
+    player.body.force.y += ggj.speed*y;
 
 }
 

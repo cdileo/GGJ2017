@@ -86,13 +86,6 @@ function create() {
     ggj.horizon = game.add.sprite(0, 0, 'tempBackground');
     ggj.waveColliders = createWaveColliders();
 
-    // Player
-    ggj.players = [];
-    ggj.players[0] = createPlayer("whaleRed", 0);
-    ggj.players[1] = createPlayer("whaleGreen", 1);
-    ggj.players[2] = createPlayer("whaleBlue", 2);
-    ggj.players[3] = createPlayer("whaleBlack", 3);
-
     ggj.score = {Red: 0, Green: 0, Blue: 0, Black: 0};
 
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
@@ -113,7 +106,6 @@ function create() {
     ggj.music.tracks[0].play();
 
     ggj.titleSprite = game.add.sprite(0, 0, 'gameTitle');
-    // ggj.titleSprite.scale.setTo(.5, .5);
     ggj.scoreText = game.add.text(16, 16, 'PRESS SPACEBAR TO CONTINUE', ggj.scoreStyle);
 }
 
@@ -124,6 +116,9 @@ function render() {
 
 
 function update() {
+
+    if (ggj.title) return;
+
     // optional keyboard control
     if (navigator.getGamepads()[i] == null)
         moveThing(ggj.players[3], ggj.keyboard);    
@@ -161,7 +156,16 @@ function startRound() {
         ggj.pregame = true;
         ggj.scoreText.text = 'WHALES HATE BIRDS';
         ggj.timerText = game.add.text(16, 64, ggj.WELCOME_STRING, ggj.timerStyle);
+
+        // Player
+        ggj.players = [];
+        ggj.players[0] = createPlayer("whaleRed", 0);
+        ggj.players[1] = createPlayer("whaleGreen", 1);
+        ggj.players[2] = createPlayer("whaleBlue", 2);
+        ggj.players[3] = createPlayer("whaleBlack", 3);
+
         return;
+
     }
 
     // Game read to start

@@ -29,6 +29,7 @@ function preload() {
     game.load.spritesheet('whaleBlue', 'assets/blue.png', 128, 92);
     game.load.spritesheet('whaleBlack', 'assets/black.png', 128, 92);
     game.load.spritesheet('eatBirdEffect', 'assets/EatBirdEffect.png', 88, 88);
+    game.load.spritesheet('splashEffect', 'assets/splashEffect.png', 128, 128);
 
     game.load.image('gameTitle', 'assets/GameTitle.png')
 
@@ -224,6 +225,7 @@ function showScore() {
 
 function render() {
     //game.debug.inputInfo(32, 32);
+    // game.debug.spriteInfo(ggj.players[3], 32, 32);
 }
 
 function createBird() {
@@ -362,15 +364,31 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
         }
     } else { return; }
     let thisWhale = thisShape.body.parent.sprite;
-    if (thisWhale.isUnderWaterCount == 0)
-        ggj.soundEffects['whaleLand'].play(); 
+
+    let oldCount = thisWhale.isUnderWaterCount;
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
+    // If we're leaving the water, play the splash animation
+    if (thisWhale.isUnderWaterCount >= 0 && oldCount == 0) {
+        let xVec = thisWhale.body.velocity.x;
+        let yVec = thisWhale.body.velocity.y;
+        let angleRads = Math.atan2(yVec, xVec) - Math.PI / 2;
+        let angleDeg = (angleRads * 180 / Math.PI);
+        let dirMod = xVec > 0 ? 1 : -1;
+        let splashSprite = game.add.sprite( thisWhale.x - thisWhale.width / 2,
+                                            thisWhale.y - thisWhale.height, 
+                                            'splashEffect');
+        splashSprite.rotation = angleRads;
+        let anim = splashSprite.animations.add('splash');
+        splashSprite.animations.play('splash', 30, false);
+        anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);
+    }
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
+    
     if (thisWhale.isUnderWaterCount == 0)
         ggj.soundEffects['whaleJump'].play(); 
 }

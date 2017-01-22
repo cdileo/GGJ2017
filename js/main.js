@@ -30,6 +30,8 @@ function preload() {
     game.load.spritesheet('whaleBlack', 'assets/black.png', 128, 92);
     game.load.spritesheet('eatBirdEffect', 'assets/EatBirdEffect.png', 88, 88);
 
+    game.load.image('gameTitle', 'assets/GameTitle.png')
+
     //game.load.image('bird', 'assets/bird.png');
     game.load.spritesheet('bird', 'assets/birdani.png', 88, 46);
     game.load.script('input', 'js/input.js');
@@ -59,8 +61,8 @@ ggj.roundMS = 20000;
 ggj.roundOver = false;
 ggj.title = true;
 ggj.WAVE_COLLIDER_COUNT = 9;
-ggj.WELCOME_STRING = "Use the left joystick to swim in the ocean (one person \ncan use the arrow keys on the keyboard)\n" +
-    "The faster you are swimming when you leave the water, \nthe higher you will jump!\n" +
+ggj.WELCOME_STRING = "Use the left joystick to swim in the \nocean (one person can use the arrow \nkeys on the keyboard).\n" +
+    "The faster you are swimming \nwhen you leave the water, the \nhigher you will jump!\n\n" +
     "To win the game, EAT THE MOST BIRDS.\n" +
     "PRESS THE SPACEBAR TO START"; 
 ggj.CREDITS = "Angela Chen - Programmer\n" +
@@ -71,7 +73,6 @@ ggj.CREDITS = "Angela Chen - Programmer\n" +
 
 ggj.scoreStyle = { font: '40px Knewave', fill: '#fff' };
 ggj.timerStyle = { font: '36px Knewave', fill: '#000', stroke: '#fff', strokeThickness: 2 };
-
 
 function create() {
     //game.world.setBounds(0, 0, game.world.width,  game.world.height);
@@ -108,6 +109,9 @@ function create() {
     ggj.music = createMusic();
     ggj.soundEffects = createSoundEffects();
     ggj.music.tracks[0].play();
+
+    ggj.titleSprite = game.add.sprite(560, 5, 'gameTitle');
+    ggj.titleSprite.scale.setTo(.5, .5);
 }
 
 function render() {
@@ -156,6 +160,8 @@ function startRound() {
 
     // Game read to start
     ggj.title = false;
+
+    ggj.titleSprite.destroy();
 
     ggj.startTime = Date.now();
     ggj.timerText.fill = '#000';

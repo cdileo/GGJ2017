@@ -357,9 +357,15 @@ function createSoundEffects () {
     effects['whaleJump'] = game.add.audio('whaleJump');
     effects['whaleLand'] = game.add.audio('whaleLand');
     effects['whaleBump'] = game.add.audio('whaleBump');
-    effects['whaleSounds2'] = game.add.audio('whaleSounds2');
-    effects['whaleSounds3'] = game.add.audio('whaleSounds3');
+    effects['whaleSounds'] = [];
     effects['bubbles'] = game.add.audio('bubbles');
+    for (let i in effects) {
+        effects[i].allowMultiple = true;
+    }
 
+    effects['whaleSounds'][0] = game.add.audio('whaleSounds2');
+    effects['whaleSounds'][1] = game.add.audio('whaleSounds3');
+    // Point at which movement audio will be triggered
+    effects['audioThreshold'] = 60;
     return effects;
 }

@@ -22,8 +22,6 @@ function moveThing(player, input) {
     } else if (player.body.velocity.x < 0) {
         player.animations.play('left');
     }
-
-        // (player.body.velocity.x <= 10 && player.body.velocity.x >= -10)
 }
 
 function inSky(player) {
@@ -32,6 +30,12 @@ function inSky(player) {
 
 function airMovement(player, input) {
     player.body.force.y += ggj.gravity;
+    if (player.body.velocity.x + player.body.velocity.y > ggj.soundEffects['audioThreshold']) {
+        let wsNum = Math.round(Math.random());
+        if (!ggj.soundEffects['whaleSounds'][wsNum].isPlaying) {
+            ggj.soundEffects['whaleSounds'][wsNum].play();
+        }
+    }
 }
 
 function seaMovement(player, input) {
@@ -80,6 +84,12 @@ function seaMovement(player, input) {
 
     player.body.force.x += ggj.speed*x;
     player.body.force.y += ggj.speed*y;
-
+// debugger;
+    // Attach audio to movement
+    if (player.body.velocity.x + player.body.velocity.y > ggj.soundEffects['audioThreshold']) {
+        if (!ggj.soundEffects['bubbles'].isPlaying) {
+            ggj.soundEffects['bubbles'].play();
+        }
+    }
 }
 

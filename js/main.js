@@ -187,9 +187,8 @@ function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
     deadBird.animations.add('explode', [0, 1, 2, 3, 4, 5]);
     deadBird.animations.play('explode', 10, false, true);
 
-    
-
     bird.destroy();
+    ggj.soundEffects['birdExplode'].play();
 
     var whaleColor = playerBody.sprite.key.slice(5);
     console.log(whaleColor);

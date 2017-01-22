@@ -3,12 +3,15 @@
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
 
 function preload() {
-    game.load.image('whaleGreen', 'assets/whale_gr.png');
-    game.load.image('whaleRed', 'assets/whale_re.png');
-    game.load.image('whaleBlue', 'assets/whale_blu.png');
-    game.load.image('whaleBlack', 'assets/whale_bl.png');
+    game.load.image('background', 'assets/background.png');
+    
+    game.load.spritesheet('whaleRed', 'assets/red.png', 128, 92);
+    game.load.spritesheet('whaleGreen', 'assets/green.png', 128, 92);
+    game.load.spritesheet('whaleBlue', 'assets/blue.png', 128, 92);
+    game.load.spritesheet('whaleBlack', 'assets/black.png', 128, 92);
 
-    game.load.image('bird', 'assets/bird.png');
+    //game.load.image('bird', 'assets/bird.png');
+    game.load.spritesheet('bird', 'assets/birdani.png', 88, 46);
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
 }
@@ -21,6 +24,8 @@ function create() {
     //game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.setBoundsToWorld();
     game.physics.startSystem(Phaser.Physics.P2JS);
+
+    game.add.sprite(0, 0, 'background');
 
     ggj.players = [];
     ggj.players[0] = createPlayer("whaleRed", 0);
@@ -53,12 +58,14 @@ function create() {
 
 function update() {
 
+    //moveThing(ggj.players[i], ggj.keyboard); 
     for (var i = 0; i < 4; i++) {
-        moveThing(ggj.players[i], navigator.getGamepads()[i]);    
+        moveThing(ggj.players[i], navigator.getGamepads()[i]);   
     }
 
 
     for (var i = 0; i < birds.length; i++) {
+        //birds.animations.play('right');
         if (birds[i].body && birds[i].body.x > game.world.width) {
             birds[i].destroy();
         }
@@ -72,6 +79,9 @@ function createBird() {
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.events.onOutOfBounds.destroy = true;
     ggj.bird.body.velocity.x = 500;
+    //add(name, frames, frameRate, loop, useNumericIndex)
+    ggj.bird.animations.add('right', [8, 9, 10, 11 , 12, 13, 14, 15], 10, true);
+    ggj.bird.animations.play('right');
     var found = false;
     //ggj.bird.body.onBeginContact.add(hitBird);
 
@@ -125,6 +135,10 @@ function createPlayer(sprite, player) {
     newSprite.body.collideWorldBounds = true;
     newSprite.body.mass = .1;
     newSprite.body.fixedRotation = true;
+
+    newSprite.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
+    newSprite.animations.add('left', [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
+
     return newSprite;
 }
 

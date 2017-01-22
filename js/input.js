@@ -4,11 +4,26 @@ ggj.gravity = 50;
 
 function moveThing(player, input) {
 
-    if (inSky(player, ggj.horizon)) {
+    var sky = inSky(player, ggj.horizon);
+
+    if (sky) {
         airMovement(player, input);
     } else {
         seaMovement(player, input);
     }
+
+    var upperBound = sky? 500 : 10;
+
+    //play(name, frameRate, loop, killOnComplete)
+    if (player.body.velocity.x <= upperBound && player.body.velocity.x >= -upperBound ) {
+        player.animations.stop();
+    } else if (player.body.velocity.x > 0) {
+        player.animations.play('right');
+    } else if (player.body.velocity.x < 0) {
+        player.animations.play('left');
+    }
+
+        // (player.body.velocity.x <= 10 && player.body.velocity.x >= -10)
 }
 
 function inSky(player, bound) {

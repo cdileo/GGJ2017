@@ -1,6 +1,6 @@
 //add body (force) to sprite to make it move
 
-var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
     game.load.image('whaleGreen', 'assets/whale_gr.png');
@@ -30,25 +30,21 @@ function create() {
 
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
-
-    ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
-    game.physics.p2.enable(ggj.bird);
-    ggj.bird.body.data.shapes[0].sensor = true;
-    ggj.bird.body.onBeginContact.add(hitBird);
-    //spawn a bird every 3 seconds
-
+    
     window.addEventListener("gamepadconnected", function(e) {
             console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
             e.gamepad.index, e.gamepad.id,
             e.gamepad.buttons.length, e.gamepad.axes.length);
         });
 
+    //spawn a bird every 3 seconds
     setInterval(createBird, 1000);
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
 
     ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
+
 }
 
 function update() {
@@ -66,15 +62,18 @@ function update() {
     ggj.scoreText.text = birds.length; 
 }
 
+function render() {
+    //game.debug.inputInfo(32, 32);
+}
+
 function createBird() {
-    ggj.bird = game.add.sprite(0, 50, 'bird');
+    ggj.bird = game.add.sprite(0, Math.random()*200 + 50, 'bird');
     game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.events.onOutOfBounds.destroy = true;
     ggj.bird.body.velocity.x = 500;
     var found = false;
-    //ggj.bird.body.onBeginContact.add(hitBird);
-
+    ggj.bird.body.onBeginContact.add(hitBird);
     // Place bird in array
     for (var i = 0; i < birds.length; i++) {
         if (birds[i].body == null) {
@@ -85,22 +84,11 @@ function createBird() {
     if (!found) birds.push(ggj.bird);
 }
 
-function addBird() {
-
-    //collide with bird and bird won't move
-    // ggj.bird.body.data.shapes[0].sensor = true;
-    // ggj.bird.body.onBeginContact.add(hitBird);
-    
-}
-
-// function birdOut(bird) {
-//     bird.reset(bird.x, 0);
-// }
-
-function hitBird(playerBody, birdBody, shape, shape, eq) {
-    var bird = birdBody.sprite;
-    console.log(bird);
-    ggj.bird.kill();
+function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
+    if (playerBody == null || !playerBody.sprite.key.includes("whale"))
+        return;
+    var bird = birdShape.body.parent.sprite;
+    bird.destroy();
 
     var player = playerBody.sprite;
     ggj.scoreText.text = player.key + " Won!";

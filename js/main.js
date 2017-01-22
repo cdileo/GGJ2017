@@ -276,10 +276,15 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
     // If we're leaving the water, play the splash animation
     if (thisWhale.isUnderWaterCount >= 0 && oldCount == 0) {
-        console.debug('splash!');
+        let xVec = thisWhale.body.velocity.x;
+        let yVec = thisWhale.body.velocity.y;
+        let angleRads = Math.atan2(yVec, xVec) - Math.PI / 2;
+        let angleDeg = (angleRads * 180 / Math.PI);
+        console.debug(`Splashing at ${angleDeg}`);
         let splashSprite = game.add.sprite( thisWhale.x - thisWhale.width / 2,
                                             thisWhale.y - thisWhale.height / 2, 
                                             'splashEffect');
+        splashSprite.rotation = angleRads;
         let anim = splashSprite.animations.add('splash');
         splashSprite.animations.play('splash', 30, false);
         anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);

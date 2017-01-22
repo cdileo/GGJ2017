@@ -6,6 +6,20 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', {
     update: update,
     render: render });
 
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Knewave']
+    }
+
+};
+
 
 function preload() {
     game.load.image('background', 'assets/background.png');
@@ -24,19 +38,28 @@ function preload() {
     game.load.audio('backing', 'assets/audio/Backing.ogg');
     game.load.audio('melody1', 'assets/audio/Melody1.ogg');
     game.load.audio('melody2', 'assets/audio/Melody2.ogg');
+
+    //  Load the Google WebFont Loader script
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 }
 
 var ggj = {};
 var birds = [];
 var birdsAdded = 0;
-ggj.roundMS = 30000;
+ggj.roundMS = 20000;
 ggj.roundOver = false;
+ggj.title = true;
 ggj.WAVE_COLLIDER_COUNT = 9;
+ggj.WELCOME_STRING = "Use the left joystick to swim in the ocean (one person \ncan use the arrow keys on the keyboard)\n" +
+    "The faster you are swimming when you leave the water, \nthe higher you will jump!\n" +
+    "To win the game, EAT THE MOST BIRDS.\n" +
+    "PRESS THE SPACEBAR TO START"; 
+
+ggj.scoreStyle = { font: '40px Knewave', fill: '#fff' };
+ggj.timerStyle = { font: '36px Knewave', fill: '#000', stroke: '#fff', strokeThickness: 2 };
 
 
 function create() {
-    ggj.startTime = Date.now();
-
     //game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.setBoundsToWorld();
     game.physics.startSystem(Phaser.Physics.P2JS);
@@ -63,17 +86,11 @@ function create() {
             e.gamepad.buttons.length, e.gamepad.axes.length);
         });
 
-    //spawn a bird every 3 seconds
-    ggj.birdInterval = setInterval(createBird, 1000);
-
-    ggj.roundInterval = setInterval(endRound, ggj.roundMS);
-
+    game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(startRound, this);
+  
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
-    ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
-    ggj.timerText = game.add.text(16, 64, 'Hey timer', { fontSize: '32px', fill: '#fff' });
 
-    // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
     ggj.music = createMusic();
     ggj.music.tracks[0].play();
 }
@@ -102,11 +119,47 @@ function update() {
             birds[i].destroy();
         }
     }
-    if (!ggj.roundOver) {
-        showScore();
-        ggj.timerText.text = ggj.roundMS - (Date.now() - ggj.startTime);
+
+    showTimer();
+}
+
+function createText() {
+    ggj.scoreText = game.add.text(16, 16, 'WHALES HATE BIRDS', ggj.scoreStyle);
+    ggj.timerText = game.add.text(16, 64, ggj.WELCOME_STRING, ggj.timerStyle);
+
+}
+
+function startRound() {
+
+    // Game is done, restart
+    if (ggj.roundOver) {
+        location.reload();
     }
-    
+
+    // Game in progress, do nothing
+    if (!ggj.title) return;
+
+    // Game read to start
+    ggj.title = false;
+
+    ggj.startTime = Date.now();
+    ggj.timerText.fill = '#000';
+
+    //spawn a bird every 3 seconds
+    ggj.birdInterval = setInterval(createBird, 1000);
+
+    ggj.roundInterval = setInterval(endRound, ggj.roundMS);
+}
+
+function showTimer() {
+    if (!ggj.roundOver && !ggj.title) {
+        showScore();
+        var timeLeft = (ggj.roundMS - (Date.now() - ggj.startTime)) /1000
+        if (timeLeft <= 10) {
+            ggj.timerText.fill = '#F00';
+        }
+        ggj.timerText.text = Math.ceil(timeLeft);
+    }
 }
 
 function endRound() {
@@ -128,7 +181,10 @@ function endRound() {
         }
     }
 
+    ggj.timerText.fill = '#000';
     ggj.timerText.text += winners > 1? "WIN!!!!" : "WINS!!!!!";
+    ggj.timerText.text += "\n\nPress the spacebar to play again";
+
 }
 
 function showScore() {
@@ -210,8 +266,8 @@ function createPlayer(sprite, player) {
     newSprite.body.onBeginContact.add(setIsUnderwater);
     newSprite.body.onEndContact.add(setIsNotUnderwater);
 
-    newSprite.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
-    newSprite.animations.add('left', [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
+    newSprite.animations.add('right', [0,  1,  2,  3,  4,  5,  6,  7,  8], 10, true);
+    newSprite.animations.add('left',  [10, 11, 12, 13, 14, 15, 16, 17, 18], 10, true);
 
     return newSprite;
 }

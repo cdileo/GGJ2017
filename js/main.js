@@ -12,7 +12,6 @@ function preload() {
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
     game.load.image('tempBackground', 'assets/tempBackground.png');
-    game.load.physics('tempBackgroundCollider', 'assets/tempBackgroundCollider.json');
 }
 
 var ggj = {};
@@ -21,27 +20,9 @@ function create() {
     game.world.setBounds(0, 0, game.world.width,  game.world.height);
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-
     // Waves
-    ggj.horizon = game.add.sprite(game.world.width, game.world.height, 'tempBackground');
-    var hor = ggj.horizon;
-    game.physics.p2.enable([hor], true);
-    hor.body.clearShapes();
-    if (hor.body.loadPolygon('tempBackgroundCollider', 'tempBackground')) console.log('Succeded in loading new wave poly');
-    // Change our polygon to be only a sensor, not a physics collider.
-    for (let i in hor.body.data.shapes) {
-        hor.body.data.shapes[i].sensor = true;
-    }
-    hor.anchor.x = 1;
-    hor.anchor.y = 1;
-    hor.body.onBeginContact.add(displayOverlapState, this, hor);
-
-    let horDebugGraphic = new Phaser.Graphics(game, 0, game.world.height);
-    for (let i in hor.body.data.shapes) {
-        horDebugGraphic.beginFill(0xff0000);
-        horDebugGraphic.drawPolygon(hor.body.data.shapes[i].vertices);
-        horDebugGraphic.endFill();
-    }
+    ggj.horizon = game.add.sprite(0, 0, 'tempBackground');
+    ggj.waveColliders = createWaveColliders();
 
     // Player
     ggj.player = game.add.sprite(50, 50, 'whaleGreen');
@@ -54,6 +35,7 @@ function create() {
     // ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     // ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
 
+    //bird
     ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
     game.physics.p2.enable(ggj.bird, true);
     ggj.bird.body.data.shapes[0].sensor = true;
@@ -62,17 +44,21 @@ function create() {
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
 
-    ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
-    ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
+    // ggj.scoreText = game.add.text(16, 16, 'Hey', { fontSize: '32px', fill: '#fff' });
+    // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
 }
 
 function update() {
     moveThing(ggj.player, ggj.keyboard, ggj.horizon);
-    displaySpeeds(ggj.player);
+    //displaySpeeds(ggj.player);
 }
 
 function render() {
-
+    game.debug.inputInfo(32, 32);
+    game.debug.pointer( game.input.activePointer );
+    // for (let i in ggj.waveColliders) {
+    //     game.debug.geom(ggj.waveColliders[i], '#0fffff');
+    // }
 }
 
 // Simple test for overlap state
@@ -108,4 +94,32 @@ function displayKeys(){
 
     if (ggj.keyboard.up.isDown)
         ggj.scoreText.text += "up. ";
+}
+
+function createWaveColliders() {
+    let xMin = 0;
+    let xMax = game.world.width;
+    let yMin = 0;
+    let yMax = game.world.height;
+    let widths       = [132, 36, 104,  58, 128,  82, 137, 183, 164];
+    let startHeights = [434,466, 551, 506, 466, 514, 448, 508, 467];
+    let rects = [];
+    let curX = 0;
+
+    for (let i in widths) {
+        let rect = game.add.sprite( curX, 
+                                    startHeights[i], 
+                                    null);
+        rect.width = widths[i];
+        rect.height = yMax - startHeights[i];
+        rect.x += 0.5 * rect.width;
+        rect.y += 0.5 * rect.height;
+        game.physics.p2.enable(rect, true); 
+        rect.anchor.x = 0;
+        rect.anchor.y = 0;
+        rect.body.setRectangleFromSprite();
+        rect.body.data.shapes[0].sensor = true;
+        curX += widths[i];
+    }
+    return rects;
 }

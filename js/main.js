@@ -18,7 +18,8 @@ var birds = [];
 var birdsAdded = 0;
 
 function create() {
-    game.world.setBounds(0, 0, game.world.width,  game.world.height);
+    //game.world.setBounds(0, 0, game.world.width,  game.world.height);
+    game.physics.setBoundsToWorld();
     game.physics.startSystem(Phaser.Physics.P2JS);
 
     ggj.players = [];
@@ -30,19 +31,19 @@ function create() {
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
 
-
     ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
     game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.body.onBeginContact.add(hitBird);
     //spawn a bird every 3 seconds
-    // setInterval(createBird, 1000);
 
     window.addEventListener("gamepadconnected", function(e) {
             console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
             e.gamepad.index, e.gamepad.id,
             e.gamepad.buttons.length, e.gamepad.axes.length);
         });
+
+    setInterval(createBird, 1000);
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
@@ -55,17 +56,33 @@ function update() {
     for (var i = 0; i < 4; i++) {
         moveThing(ggj.players[i], navigator.getGamepads()[i]);    
     }
-    displaySpeeds(ggj.players[2]);
-    //checkGamepad(navigator.getGamepads()[0]);
-    // if (ggj.bird.body.x > game.world.width - 500) {
-    //     ggj.bird.destroy();
-    // } 
+
+
+    for (var i = 0; i < birds.length; i++) {
+        if (birds[i].body && birds[i].body.x > game.world.width) {
+            birds[i].destroy();
+        }
+    }
+    ggj.scoreText.text = birds.length; 
 }
 
 function createBird() {
     ggj.bird = game.add.sprite(0, 50, 'bird');
-    game.physics.p2.enable(ggj.bird, true);
-    ggj.bird.body.velocity.x = 200;
+    game.physics.p2.enable(ggj.bird);
+    ggj.bird.body.data.shapes[0].sensor = true;
+    ggj.bird.events.onOutOfBounds.destroy = true;
+    ggj.bird.body.velocity.x = 500;
+    var found = false;
+    //ggj.bird.body.onBeginContact.add(hitBird);
+
+    // Place bird in array
+    for (var i = 0; i < birds.length; i++) {
+        if (birds[i].body == null) {
+            found = true;
+            birds[i] = ggj.bird;
+        }
+    } 
+    if (!found) birds.push(ggj.bird);
 }
 
 function addBird() {
@@ -76,9 +93,9 @@ function addBird() {
     
 }
 
-function removeBird() {
-
-}
+// function birdOut(bird) {
+//     bird.reset(bird.x, 0);
+// }
 
 function hitBird(playerBody, birdBody, shape, shape, eq) {
     var bird = birdBody.sprite;

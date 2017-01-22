@@ -17,6 +17,10 @@ function preload() {
     game.load.image('lazybound', 'assets/lazybound.png');
     game.load.script('input', 'js/input.js');
     game.load.image('tempBackground', 'assets/tempBackground.png');
+
+    game.load.audio('backing', 'assets/audio/Backing.ogg');
+    game.load.audio('melody1', 'assets/audio/Melody1.ogg');
+    game.load.audio('melody2', 'assets/audio/Melody2.ogg');
 }
 
 var ggj = {};
@@ -68,20 +72,17 @@ function create() {
     ggj.timerText = game.add.text(16, 64, 'Hey timer', { fontSize: '32px', fill: '#fff' });
 
     // ggj.collisionText = game.add.text(16, 32, 'Hey', { fontSize: '32px', fill: '#fff' });
-
+    ggj.music = createMusic();
+    ggj.music.tracks[0].play();
 }
 
 function render() {
     game.debug.inputInfo(32, 32);
     game.debug.pointer( game.input.activePointer );
-    // for (let i in ggj.waveColliders) {
-    //     game.debug.geom(ggj.waveColliders[i], '#0fffff');
-    // }
 }
 
 
 function update() {
-
     moveThing(ggj.players[3], ggj.keyboard);    
     // moveThing(ggj.players[3], navigator.getGamepads()[3]);    
     for (var i = 0; i < 3; i++) {
@@ -247,16 +248,16 @@ function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
-    console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
-    Colliding with ${thisWhale.isUnderWaterCount} waves.`);
+    // console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
+    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
-    console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
-    Colliding with ${thisWhale.isUnderWaterCount} waves.`);
+    // console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
+    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function createWaveColliders() {
@@ -287,4 +288,21 @@ function createWaveColliders() {
         rect.bitMask = 1 << i;
         curX += widths[i];
     }
+}
+
+function createMusic () {
+    let music = {};
+    music.currentTrack = 0;
+    music.tracks = [];
+    music.tracks[0] = game.add.audio('backing');
+    music.tracks[0].onStop.add(nextMusic, this, 0, 1);
+    music.tracks[1] = game.add.audio('melody1');
+    music.tracks[1].onStop.add(nextMusic, this, 0, 2);
+    music.tracks[2] = game.add.audio('melody2');
+    music.tracks[2].onStop.add(nextMusic, this, 0, 0);
+    return music;
+}
+
+function nextMusic (context, pri, nextTrackNo) {
+    ggj.music.tracks[nextTrackNo].play();
 }

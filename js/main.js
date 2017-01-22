@@ -267,7 +267,7 @@ function createWaveColliders() {
         rect.anchor.y = 0;
         rect.body.setRectangleFromSprite();
         rect.body.data.shapes[0].sensor = true;
+        rect.visible = false;
         curX += widths[i];
     }
-    return rects;
 }

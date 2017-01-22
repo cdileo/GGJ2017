@@ -63,6 +63,11 @@ ggj.WELCOME_STRING = "Use the left joystick to swim in the ocean (one person \nc
     "The faster you are swimming when you leave the water, \nthe higher you will jump!\n" +
     "To win the game, EAT THE MOST BIRDS.\n" +
     "PRESS THE SPACEBAR TO START"; 
+ggj.CREDITS = "Angela Chen - Programmer\n" +
+    "Chris Dileo - Programmer\n" +
+    "Madoka Nara - Artist\n" +
+    "Roxanne Taylor - Programmer\n" +
+    "Soundtrack by: Michael Fraser from Tree of Audio";
 
 ggj.scoreStyle = { font: '40px Knewave', fill: '#fff' };
 ggj.timerStyle = { font: '36px Knewave', fill: '#000', stroke: '#fff', strokeThickness: 2 };
@@ -156,7 +161,7 @@ function startRound() {
     ggj.timerText.fill = '#000';
 
     //spawn a bird every 3 seconds
-    ggj.birdInterval = setInterval(createBird, 1000);
+    ggj.birdInterval = setInterval(createBird, 900);
 
     ggj.roundInterval = setInterval(endRound, ggj.roundMS);
 }
@@ -188,12 +193,16 @@ function endRound() {
         if (ggj.score[whale] == max) {
             winners++;
             ggj.timerText.text += whale + " ";
+            game.add.sprite(150*winners, 150, 'whale' + whale);
         }
     }
 
+
+
     ggj.timerText.fill = '#000';
     ggj.timerText.text += winners > 1? "WIN!!!!" : "WINS!!!!!";
-    ggj.timerText.text += "\n\nPress the spacebar to play again";
+    ggj.timerText.text += "\n\n\nPress the spacebar to play again" +
+        "\n\nCredits:\n" + ggj.CREDITS;
 
 }
 
@@ -216,7 +225,7 @@ function createBird() {
     game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.events.onOutOfBounds.destroy = true;
-    ggj.bird.body.velocity.x = 500;
+    ggj.bird.body.velocity.x = Math.random()*300 + 200;
     //add(name, frames, frameRate, loop, useNumericIndex)
     ggj.bird.animations.add('right', [8, 9, 10, 11 , 12, 13, 14, 15], 10, true);
     ggj.bird.animations.play('right');

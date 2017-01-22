@@ -23,8 +23,6 @@ function moveThing(player, input) {
     } else if (player.body.velocity.x < 0) {
         player.animations.play('left');
     }
-
-        // (player.body.velocity.x <= 10 && player.body.velocity.x >= -10)
 }
 
 function inSky(player) {

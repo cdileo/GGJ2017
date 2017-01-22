@@ -15,6 +15,7 @@ function preload() {
     game.load.spritesheet('whaleBlue', 'assets/blue.png', 128, 92);
     game.load.spritesheet('whaleBlack', 'assets/black.png', 128, 92);
     game.load.spritesheet('eatBirdEffect', 'assets/EatBirdEffect.png', 88, 88);
+    game.load.spritesheet('splashEffect', 'assets/splashEffect.png', 128, 128);
 
     //game.load.image('bird', 'assets/bird.png');
     game.load.spritesheet('bird', 'assets/birdani.png', 88, 46);
@@ -271,17 +272,22 @@ function displayKeys(){
 function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
+    let oldCount = thisWhale.isUnderWaterCount;
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
-    // console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
+    // If we're leaving the water, play the splash animation
+    if (thisWhale.isUnderWaterCount >= 0 && oldCount == 0) {
+        console.debug('splash!');
+        let splashSprite = game.add.sprite(thisWhale.x, thisWhale.y, 'splashEffect');
+        let anim = splashSprite.animations.add('splash');
+        splashSprite.animations.play('splash', 30, false);
+        anim.onComplete.add(function() { splashSprite.kill(); }, splashSprite);
+    }
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
-    // console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function createWaveColliders() {

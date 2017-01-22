@@ -91,6 +91,14 @@ function hitBird(playerBody, birdBody, shape, shape, eq) {
 }
 
 function createPlayer(sprite, player) {
+    if (navigator.getGamepads()[player] &&
+        navigator.getGamepads()[player].connected) {
+        console.log("gamepad " + player + " connected");
+    }
+    else {
+        console.log("gamepad " + player + " NOT connected");
+    }
+
     var newSprite = game.add.sprite(
         (player*150)+50, 
         game.world.height/3, 
@@ -118,10 +126,6 @@ function checkGamepad (gamepad) {
             "\nA1: " + gamepad.axes[1] +
             "\nA2: " + gamepad.axes[2] +
             "\nA3: " + gamepad.axes[3];
-
-    } else {
-        isConnected[0] = 1;
-        ggj.scoreText.text = "Gamepad 0 NOT connected";
     }
     if(game.input.gamepad.pad2.connected) {
         isConnected[1] = 0;

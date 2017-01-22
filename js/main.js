@@ -280,19 +280,28 @@ function displayKeys(){
 }
 
 function setIsUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
-    if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
+    if (otherBody != null && otherBody.sprite != null) {        
+        //This should probably be separated, but works here for now.
+        if (otherBody.sprite.name.includes('whale')) {
+            ggj.soundEffects['whaleBump'].play();
+            return;
+        }
+        if (!otherBody.sprite.name.includes('wave')) {
+            return;
+        }
+    } else { return; }
     let thisWhale = thisShape.body.parent.sprite;
+    if (thisWhale.isUnderWaterCount == 0)
+        ggj.soundEffects['whaleLand'].play(); 
     thisWhale.isUnderWaterCount = Math.min(ggj.WAVE_COLLIDER_COUNT, thisWhale.isUnderWaterCount + 1);
-    // console.debug(`${thisWhale.name}: Entering ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
 }
 
 function setIsNotUnderwater(otherBody, otherBodyP2, thisShape, otherShape, eq) {
     if (otherBody == null || otherBody.sprite == null || !otherBody.sprite.name.includes('wave')) return;
     let thisWhale = thisShape.body.parent.sprite;
     thisWhale.isUnderWaterCount = Math.max(0, thisWhale.isUnderWaterCount - 1);
-    // console.debug(`${thisWhale.name}: Leaving ${otherBody.sprite.name}. 
-    // Colliding with ${thisWhale.isUnderWaterCount} waves.`);
+    if (thisWhale.isUnderWaterCount == 0)
+        ggj.soundEffects['whaleJump'].play(); 
 }
 
 function createWaveColliders() {

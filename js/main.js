@@ -26,13 +26,13 @@ function preload() {
     game.load.audio('melody2', 'assets/audio/Melody2.ogg');
 
     // Sound Effects
-    game.load.audio('birdExplode', 'assets/audio/birdExplode.ogg');
-    game.load.audio('whaleJump', 'assets/audio/whaleJump.ogg');
-    game.load.audio('whaleLand', 'assets/audio/whaleLand.ogg');
-    game.load.audio('whaleBump', 'assets/audio/whaleBump.ogg');
-    game.load.audio('whaleSounds2', 'assets/audio/whaleSounds2.ogg');
-    game.load.audio('whaleSounds3', 'assets/audio/whaleSounds3.ogg');
-    game.load.audio('bubbles', 'assets/audio/bubbles.ogg');
+    game.load.audio('birdExplode', 'assets/audio/effects/birdExplode.ogg');
+    game.load.audio('whaleJump', 'assets/audio/effects/whaleJump.ogg');
+    game.load.audio('whaleLand', 'assets/audio/effects/whaleLand.ogg');
+    game.load.audio('whaleBump', 'assets/audio/effects/whaleBump.ogg');
+    game.load.audio('whaleSounds2', 'assets/audio/effects/whaleSounds2.ogg');
+    game.load.audio('whaleSounds3', 'assets/audio/effects/whaleSounds3.ogg');
+    game.load.audio('bubbles', 'assets/audio/effects/bubbles.ogg');
 }
 
 var ggj = {};

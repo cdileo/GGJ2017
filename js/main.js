@@ -8,13 +8,16 @@ var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', {
 
 
 function preload() {
-    game.load.image('whaleGreen', 'assets/whale_gr.png');
-    game.load.image('whaleRed', 'assets/whale_re.png');
-    game.load.image('whaleBlue', 'assets/whale_blu.png');
-    game.load.image('whaleBlack', 'assets/whale_bl.png');
+    game.load.image('background', 'assets/background.png');
+    
+    game.load.spritesheet('whaleRed', 'assets/red.png', 128, 92);
+    game.load.spritesheet('whaleGreen', 'assets/green.png', 128, 92);
+    game.load.spritesheet('whaleBlue', 'assets/blue.png', 128, 92);
+    game.load.spritesheet('whaleBlack', 'assets/black.png', 128, 92);
+    game.load.spritesheet('eatBirdEffect', 'assets/EatBirdEffect.png', 88, 88);
 
-    game.load.image('bird', 'assets/bird.png');
-    game.load.image('lazybound', 'assets/lazybound.png');
+    //game.load.image('bird', 'assets/bird.png');
+    game.load.spritesheet('bird', 'assets/birdani.png', 88, 46);
     game.load.script('input', 'js/input.js');
     game.load.image('tempBackground', 'assets/tempBackground.png');
 
@@ -26,7 +29,7 @@ function preload() {
 var ggj = {};
 var birds = [];
 var birdsAdded = 0;
-ggj.roundMS = 10000;
+ggj.roundMS = 30000;
 ggj.roundOver = false;
 ggj.WAVE_COLLIDER_COUNT = 9;
 
@@ -52,7 +55,6 @@ function create() {
 
     ggj.score = {Red: 0, Green: 0, Blue: 0, Black: 0};
 
-    ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
     
     window.addEventListener("gamepadconnected", function(e) {
@@ -83,12 +85,19 @@ function render() {
 
 
 function update() {
-    moveThing(ggj.players[3], ggj.keyboard);    
-    // moveThing(ggj.players[3], navigator.getGamepads()[3]);    
+    // optional keyboard control
+    if (navigator.getGamepads()[i] == null)
+        moveThing(ggj.players[3], ggj.keyboard);    
+    else 
+        moveThing(ggj.players[3], navigator.getGamepads()[3]);
+
+    // Move each player    
     for (var i = 0; i < 3; i++) {
         moveThing(ggj.players[i], navigator.getGamepads()[i]);    
+
     }
     for (var i = 0; i < birds.length; i++) {
+        //birds.animations.play('right');
         if (birds[i].body && birds[i].body.x > game.world.width) {
             birds[i].destroy();
         }
@@ -142,6 +151,9 @@ function createBird() {
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.events.onOutOfBounds.destroy = true;
     ggj.bird.body.velocity.x = 500;
+    //add(name, frames, frameRate, loop, useNumericIndex)
+    ggj.bird.animations.add('right', [8, 9, 10, 11 , 12, 13, 14, 15], 10, true);
+    ggj.bird.animations.play('right');
     var found = false;
     ggj.bird.body.onBeginContact.add(hitBird);
     // Place bird in array
@@ -158,6 +170,13 @@ function hitBird(playerBody, player2P, birdShape, playerShape, eq) {
     if (playerBody == null || !playerBody.sprite.key.includes("whale"))
         return;
     var bird = birdShape.body.parent.sprite;
+
+    var x = birdShape.body.parent.x;
+    var y = birdShape.body.parent.y;
+    var deadBird = game.add.sprite(x, y, 'eatBirdEffect');
+    deadBird.animations.add('explode', [0, 1, 2, 3, 4, 5]);
+    deadBird.animations.play('explode', 10, false, true);
+   
     bird.destroy();
 
     var whaleColor = playerBody.sprite.key.slice(5);
@@ -184,11 +203,16 @@ function createPlayer(sprite, player) {
     newSprite.body.collideWorldBounds = true;
     newSprite.body.mass = .1;
     newSprite.body.fixedRotation = true;
+
     newSprite.isUnderWater = true;
     newSprite.name = `whale ${player}`;
     newSprite.isUnderWaterCount = 0;
     newSprite.body.onBeginContact.add(setIsUnderwater);
     newSprite.body.onEndContact.add(setIsNotUnderwater);
+
+    newSprite.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
+    newSprite.animations.add('left', [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
+
     return newSprite;
 }
 
@@ -278,7 +302,7 @@ function createWaveColliders() {
         rect.height = yMax - startHeights[i];
         rect.x += 0.5 * rect.width;
         rect.y += 0.5 * rect.height;
-        game.physics.p2.enable(rect, true); 
+        game.physics.p2.enable(rect); 
         rect.anchor.x = 0;
         rect.anchor.y = 0;
         rect.body.setRectangleFromSprite();

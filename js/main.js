@@ -58,7 +58,7 @@ function preload() {
 var ggj = {};
 var birds = [];
 var birdsAdded = 0;
-ggj.roundMS = 20000;
+ggj.roundMS = 45000;
 ggj.roundOver = false;
 ggj.title = true;
 ggj.pregame = false;

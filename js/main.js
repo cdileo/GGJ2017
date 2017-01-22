@@ -44,7 +44,7 @@ function update() {
     //     ggj.bird.kill();
     // } 
     for (var i = 0; i < birds.length; i++) {
-        if (birds[i].body.x > game.world.width) {
+        if (birds[i].body && birds[i].body.x > game.world.width) {
             birds[i].destroy();
         }
     }
@@ -55,11 +55,19 @@ function createBird() {
     ggj.bird = game.add.sprite(0, 50, 'bird');
     game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
-    //ggj.bird.collideWorldBounds = false;
-    //ggj.bird.events.onOutOfBounds.destroy;
-    //ggj.bird.outOfBoundsKill = true;
+    ggj.bird.events.onOutOfBounds.destroy = true;
     ggj.bird.body.velocity.x = 500;
-    birds.push(ggj.bird);
+    var found = false;
+    //ggj.bird.body.onBeginContact.add(hitBird);
+
+    // Place bird in array
+    for (var i = 0; i < birds.length; i++) {
+        if (birds[i].body == null) {
+            found = true;
+            birds[i] = ggj.bird;
+        }
+    } 
+    if (!found) birds.push(ggj.bird);
 }
 
 function addBird() {

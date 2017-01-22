@@ -1,4 +1,4 @@
-
+//add body (force) to sprite to make it move
 
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'mainDiv', { preload: preload, create: create, update: update });
 
@@ -11,6 +11,8 @@ function preload() {
 }
 
 var ggj = {};
+var birds = [];
+var birdsAdded = 0;
 
 function create() {
     game.world.setBounds(0, 0, game.world.width,  game.world.height);
@@ -22,10 +24,13 @@ function create() {
     ggj.horizon = game.add.sprite(0, game.world.height/2, 'lazybound');
     ggj.horizon.scale.setTo(1, ggj.horizon.scaleMax);
 
+
     ggj.bird = game.add.sprite(game.world.width/3, 200, 'bird');
     game.physics.p2.enable(ggj.bird);
     ggj.bird.body.data.shapes[0].sensor = true;
     ggj.bird.body.onBeginContact.add(hitBird);
+    //spawn a bird every 3 seconds
+    // setInterval(createBird, 1000);
 
     window.addEventListener("gamepadconnected", function(e) {
             console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
@@ -44,6 +49,29 @@ function update() {
     moveThing(ggj.player1, ggj.keyboard);
     moveThing(ggj.player2, navigator.getGamepads()[0]);
     checkGamepad(navigator.getGamepads()[0]);
+    moveThing(ggj.player, ggj.keyboard, ggj.horizon);
+    displaySpeeds(ggj.player);
+    // if (ggj.bird.body.x > game.world.width - 500) {
+    //     ggj.bird.destroy();
+    // } 
+}
+
+function createBird() {
+    ggj.bird = game.add.sprite(0, 50, 'bird');
+    game.physics.p2.enable(ggj.bird, true);
+    ggj.bird.body.velocity.x = 200;
+}
+
+function addBird() {
+
+    //collide with bird and bird won't move
+    // ggj.bird.body.data.shapes[0].sensor = true;
+    // ggj.bird.body.onBeginContact.add(hitBird);
+    
+}
+
+function removeBird() {
+
 }
 
 function hitBird(playerBody, birdBody, shape, shape, eq) {

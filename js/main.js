@@ -14,10 +14,11 @@ var birds = [];
 var birdsAdded = 0;
 
 function create() {
-    game.world.setBounds(0, 0, game.world.width,  game.world.height);
+    //game.world.setBounds(0, 0, game.world.width,  game.world.height);
+    game.physics.setBoundsToWorld();
     game.physics.startSystem(Phaser.Physics.P2JS);
     ggj.player = game.add.sprite(32, game.world.height - 150, 'whaleGreen');
-    game.physics.p2.enable(ggj.player, true);
+    game.physics.p2.enable(ggj.player);
     ggj.player.body.collideWorldBounds = true;
     ggj.player.body.mass = .1;
     ggj.player.body.fixedRotation = true;
@@ -27,6 +28,7 @@ function create() {
 
     //spawn a bird every 3 seconds
     setInterval(createBird, 1000);
+    //createBird();
 
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
@@ -37,16 +39,27 @@ function create() {
 function update() {
 
     moveThing(ggj.player, ggj.keyboard, ggj.horizon);
-    displaySpeeds(ggj.player);
-    // if (ggj.bird.body.x > game.world.width - 500) {
-    //     ggj.bird.destroy();
+    //displaySpeeds(ggj.player);
+    // if (ggj.bird.body.x > game.world.width - 50) {
+    //     ggj.bird.kill();
     // } 
+    for (var i = 0; i < birds.length; i++) {
+        if (birds[i].body.x > game.world.width) {
+            birds[i].destroy();
+        }
+    }
+    ggj.scoreText.text = birds.length; 
 }
 
 function createBird() {
     ggj.bird = game.add.sprite(0, 50, 'bird');
-    game.physics.p2.enable(ggj.bird, true);
-    ggj.bird.body.velocity.x = 200;
+    game.physics.p2.enable(ggj.bird);
+    ggj.bird.body.data.shapes[0].sensor = true;
+    //ggj.bird.collideWorldBounds = false;
+    //ggj.bird.events.onOutOfBounds.destroy;
+    //ggj.bird.outOfBoundsKill = true;
+    ggj.bird.body.velocity.x = 500;
+    birds.push(ggj.bird);
 }
 
 function addBird() {
@@ -57,9 +70,9 @@ function addBird() {
     
 }
 
-function removeBird() {
-
-}
+// function birdOut(bird) {
+//     bird.reset(bird.x, 0);
+// }
 
 function hitBird(bird, player) {
     console.log("Hit bird");

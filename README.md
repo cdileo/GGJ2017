@@ -5,3 +5,6 @@ Global Game Jam entry for 2017
 * Chris Dileo
 * Roxanne Taylor
 * Angela Chen
+* Madoka Nara
+
+###With Sound by Michael Fraser (http://www.michaelfrasermusic.com)

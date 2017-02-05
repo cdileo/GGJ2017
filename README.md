@@ -1,5 +1,5 @@
 # GGJ2017 - Whales Hate Birds
-Global Game Jam entry for 2017
+Global Game Jam entry for 2017 http://globalgamejam.org/2017/games/whales-hate-birds
 
 ![gametitle](https://cloud.githubusercontent.com/assets/6798281/22630245/43732a0e-ebab-11e6-8a6e-a299feed91eb.png)
 
@@ -13,4 +13,6 @@ Game Instructions: Use the left joystick to swim in the ocean (one person can us
 * Angela Chen - Programmer
 * Madoka Nara - Artist
 
-###With Sound by Michael Fraser (http://www.michaelfrasermusic.com)
+###Music by Michael Fraser (http://www.michaelfrasermusic.com)
+
+![screenshot](https://cloud.githubusercontent.com/assets/6798281/22630475/96fff54a-ebaf-11e6-8040-135e8f3822a3.png)

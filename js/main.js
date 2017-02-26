@@ -63,8 +63,9 @@ ggj.roundOver = false;
 ggj.title = true;
 ggj.pregame = false;
 ggj.WAVE_COLLIDER_COUNT = 9;
-ggj.WELCOME_STRING = "Use the left joystick to swim in the ocean (one person can \nuse the arrow keys on the keyboard).\n" +
-    "The faster you are swimming when you leave the water, the \nhigher you will jump!\n\n" +
+ggj.WELCOME_STRING = "SWIM IN THE SEA WITH EITHER \n\tXBox controllers: Use the left joystick, OR\n" +
+    "\tKeyboard: One player can use WASD, one can use\n the arrow keys.\n\n" +
+    "The faster you are swimming when you leave the water, the \nhigher you will jump! You can't control your whale in the air.\n\n" +
     "To win the game, EAT THE MOST BIRDS.\n" +
     "PRESS THE SPACEBAR TO START"; 
 ggj.CREDITS = "Angela Chen - Programmer\n" +
@@ -100,6 +101,7 @@ function create() {
   
     //  Our controls.
     ggj.keyboard = game.input.keyboard.createCursorKeys();
+    ggj.keyboardLeft = game.input.keyboard.addKeys( { 'up': Phaser.KeyCode.W, 'down': Phaser.KeyCode.S, 'left': Phaser.KeyCode.A, 'right': Phaser.KeyCode.D } );
 
     ggj.music = createMusic();
     ggj.soundEffects = createSoundEffects();
@@ -114,19 +116,23 @@ function render() {
     game.debug.pointer( game.input.activePointer );
 }
 
-
 function update() {
 
     if (ggj.title) return;
 
     // optional keyboard control
-    if (navigator.getGamepads()[3] == null)
-        moveThing(ggj.players[3], ggj.keyboard);    
+    if (navigator.getGamepads()[2] == null)
+        moveThing(ggj.players[2], ggj.keyboard);    
     else 
-        moveThing(ggj.players[3], navigator.getGamepads()[3]);
+        moveThing(ggj.players[2], navigator.getGamepads()[2]);
+
+    if (navigator.getGamepads()[3] == null)
+        moveThing(ggj.players[3], ggj.keyboardLeft);
+    else 
+        moveThing(ggj.players[3], navigator.getGamepads[3]);
 
     // Move each player    
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 2; i++) {
         moveThing(ggj.players[i], navigator.getGamepads()[i]);    
 
     }

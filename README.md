@@ -10,8 +10,8 @@ Game Instructions: Use the left joystick to swim in the ocean (one person can us
 ###A game by:
 * Chris Dileo - Programmer
 * Roxanne Taylor - Programmer
-* Angela Chen - Programmer
 * Madoka Nara - Artist
+* Angela Chen - Project Manager
 
 ###Music by Michael Fraser (http://www.michaelfrasermusic.com)
 

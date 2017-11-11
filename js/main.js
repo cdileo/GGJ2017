@@ -68,10 +68,10 @@ ggj.WELCOME_STRING = "SWIM IN THE SEA WITH EITHER \n\tXBox controllers: Use the 
     "The faster you are swimming when you leave the water, the \nhigher you will jump! You can't control your whale in the air.\n\n" +
     "To win the game, EAT THE MOST BIRDS.\n" +
     "PRESS THE SPACEBAR TO START"; 
-ggj.CREDITS = "Angela Chen - Programmer\n" +
-    "Chris Dileo - Programmer\n" +
+ggj.CREDITS = "Chris Dileo - Programmer\n" +
     "Madoka Nara - Artist\n" +
     "Roxanne Taylor - Programmer\n" +
+    "Angela Chen - Project Manager\n" +
     "Soundtrack by: Michael Fraser from Tree of Audio";
 
 ggj.scoreStyle = { font: '40px Knewave', fill: '#fff' };
